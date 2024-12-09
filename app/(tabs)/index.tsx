@@ -76,7 +76,6 @@ export default function HomeScreen() {
           setIsLoggedIn(true);
           console.log(value);
         }
-        // await AsyncStorage.setItem("key", "I like to save it.");
       } catch (error) {
         console.log(error);
       }
@@ -186,61 +185,93 @@ export default function HomeScreen() {
                 icon="firework"
                 mode="contained"
                 onPress={async () => {
-                  // console.log("Ok");
-                  if (!text) {
-                    Alert.alert("Enter your Name", "Name field is empty", [
-                      { text: "OK", onPress: () => console.log("OK Pressed") },
-                    ]);
-                  }
-                  if (!state) {
-                    Alert.alert(
-                      "Select your State",
-                      "State has not been selected",
-                      [{ text: "OK", onPress: () => console.log("OK Pressed") }]
-                    );
-                  }
-                  if (!district) {
-                    Alert.alert(
-                      "Select your District",
-                      "District has not been selected",
-                      [{ text: "OK", onPress: () => console.log("OK Pressed") }]
-                    );
-                  }
-                  if (!number) {
-                    Alert.alert("Enter your Number", "Number field is empty", [
-                      { text: "OK", onPress: () => console.log("OK Pressed") },
-                    ]);
-                  }
-                  const reqBody = {
-                    name: text,
-                    stateName: state,
-                    districtName: district,
-                    contact: number,
-                  };
-                  setLoading(true);
-                  const res = await fetch(
-                    "https://c5ff-115-99-94-143.ngrok-free.app/create-user",
-                    {
-                      method: "POST",
-                      headers: {
-                        "Content-Type": "application/json",
-                      },
-                      body: JSON.stringify(reqBody),
+                  try {
+                    if (!text) {
+                      Alert.alert("Enter your Name", "Name field is empty", [
+                        {
+                          text: "OK",
+                          onPress: () => console.log("OK Pressed"),
+                        },
+                      ]);
+                      return;
                     }
-                  );
-                  const jsonRes = await res.json();
-                  await AsyncStorage.setItem("mandi-id", jsonRes.mandiId);
-                  await AsyncStorage.setItem(
-                    "mandi-details",
-                    JSON.stringify(reqBody)
-                  );
-                  setLoading(false);
-                  setTimeout(() => {
-                    setIsLoggedIn(true);
-                    setLoading(null);
-                  }, 1500);
-                  setMandiDetails(jsonRes);
-                  console.log(jsonRes);
+                    if (!state) {
+                      Alert.alert(
+                        "Select your State",
+                        "State has not been selected",
+                        [
+                          {
+                            text: "OK",
+                            onPress: () => console.log("OK Pressed"),
+                          },
+                        ]
+                      );
+                      return;
+                    }
+                    if (!district) {
+                      Alert.alert(
+                        "Select your District",
+                        "District has not been selected",
+                        [
+                          {
+                            text: "OK",
+                            onPress: () => console.log("OK Pressed"),
+                          },
+                        ]
+                      );
+                      return;
+                    }
+                    if (!number) {
+                      Alert.alert(
+                        "Enter your Number",
+                        "Number field is empty",
+                        [
+                          {
+                            text: "OK",
+                            onPress: () => console.log("OK Pressed"),
+                          },
+                        ]
+                      );
+                      return;
+                    }
+                    const reqBody = {
+                      name: text,
+                      stateName: state,
+                      districtName: district,
+                      contact: {
+                        contactType: "phone",
+                        contactDetail: number,
+                      },
+                    };
+                    setLoading(true);
+                    const res = await fetch(
+                      "https://c5ff-115-99-94-143.ngrok-free.app/create-user",
+                      {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(reqBody),
+                      }
+                    );
+                    const jsonRes = await res.json();
+                    console.log(jsonRes);
+                    await AsyncStorage.setItem("mandi-id", jsonRes.mandiId);
+                    await AsyncStorage.setItem(
+                      "mandi-details",
+                      JSON.stringify(reqBody)
+                    );
+
+                    setLoading(false);
+                    setTimeout(() => {
+                      setIsLoggedIn(true);
+                      setLoading(null);
+                    }, 1500);
+                    setMandiDetails(jsonRes);
+                    console.log(jsonRes);
+                  } catch (error) {
+                    console.log(error);
+                  }
                 }}
               >
                 Submit
@@ -303,6 +334,7 @@ export default function HomeScreen() {
               maxDigit={`${text.length.toString()}/10`}
             />
           </ThemedView>
+          {/* await AsyncStorage.removeItem("mandi-id"); */}
           <ThemedView style={styles.stepContainer}>
             <ThemedText type="subtitle">Step 3: Submit</ThemedText>
             <View className="pt-5">
@@ -353,7 +385,7 @@ function AfterLoading({ text }: { text: string }) {
   return (
     <ThemedView style={styles.stepContainer}>
       <View className="flex flex-row items-center justify-center  pr-7 pt-2">
-        <ThemedText type="subtitle" className="!text-slate-600 !text-4xl">
+        <ThemedText type="subtitle" className="!text-slate-600 !text-2xl">
           {text}
         </ThemedText>
       </View>
