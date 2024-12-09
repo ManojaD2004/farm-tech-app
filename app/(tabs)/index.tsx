@@ -25,7 +25,7 @@ export default function HomeScreen() {
         <HelloWave />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText className="text-red-500" type="default">
+        <ThemedText className="!text-red-500 bg-green-500" type="default">
           You have not logged in. Start by entering your deatils!
         </ThemedText>
         <ThemedText type="subtitle">Step 1: Enter your Name</ThemedText>
