@@ -10,8 +10,8 @@ const SplashScreen = () => {
   useEffect(() => {
 
     const timer = setTimeout(() => {
-      router.push("/(tabs)"); // Replace '/home' with your desired route
-    }, 10000); // Adjust duration as needed
+      router.push("/(tabs)"); 
+    }, 10000);
 
     return () => clearTimeout(timer);
   }, [router]);
@@ -19,10 +19,10 @@ const SplashScreen = () => {
   return (
     <View style={styles.container}>
        <LottieView
-         source={require("../assets/images/farmanimation.json")} // Replace with your Lottie animation file
+         source={require("../assets/images/farmanimation.json")} 
          autoPlay
          loop
-         style={styles.lottie} // Ensure animation completes
+         style={styles.lottie} 
         />
     </View>
   );
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
-      backgroundColor: "#ffffff", // Match the animation background
+      backgroundColor: "#ffffff",
     },
     mainApp: {
       flex: 1,
