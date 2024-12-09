@@ -9,6 +9,7 @@ import BlinkText from "@/components/BlinkText";
 import { Dropdown } from "react-native-paper-dropdown";
 import { ActivityIndicator, Button, MD2Colors } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import CONSTANT from "../constant";
 
 const stateDistrict = {
   Karnataka: [
@@ -58,10 +59,18 @@ const stateOptions: { label: string; value: StateInIndia }[] = [
   { label: "Karnataka", value: "Karnataka" },
 ];
 
+const gradeOptions = [
+  { label: "1", value: "1" },
+  { label: "2", value: "2" },
+  { label: "3", value: "3" },
+];
+
 export default function HomeScreen() {
   const [text, setText] = useState("");
   const [cmdName, setCmdName] = useState("");
   const [cmdPrice, setCmdPrice] = useState("");
+  const [cmdCat, setCmdCat] = useState("");
+  const [cmdGradeType, setCmdGradeType] = useState("");
   const [number, setNumber] = useState("");
   const [mandiDetails, setMandiDetails] = useState<any>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -71,17 +80,22 @@ export default function HomeScreen() {
   useEffect(() => {
     async function execThis() {
       try {
-        const value = await AsyncStorage.getItem("mandi-it");
-        if (value !== null) {
+        const value = await AsyncStorage.getItem("mandi-id");
+        const value1 = await AsyncStorage.getItem("mandi-details");
+        if (value !== null && value1 !== null) {
           setIsLoggedIn(true);
-          console.log(value);
+          // console.log(value1);
+          const mandiDetails = JSON.parse(value1);
+          mandiDetails.mandiId = value;
+          setMandiDetails(mandiDetails);
         }
       } catch (error) {
         console.log(error);
       }
     }
     execThis();
-  });
+  }, []);
+  console.log(mandiDetails);
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
@@ -95,7 +109,16 @@ export default function HomeScreen() {
       }
     >
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome To Farm Tech!</ThemedText>
+        <ThemedText type="title">
+          Welcome{" "}
+          {isLoggedIn === true ? (
+            <ThemedText className="!text-yellow-800" type="title">
+              {mandiDetails.name}
+            </ThemedText>
+          ) : (
+            "To Farm Tech!"
+          )}
+        </ThemedText>
         <HelloWave />
       </ThemedView>
       {isLoggedIn === false ? (
@@ -245,7 +268,7 @@ export default function HomeScreen() {
                     };
                     setLoading(true);
                     const res = await fetch(
-                      "https://c5ff-115-99-94-143.ngrok-free.app/create-user",
+                      `${CONSTANT.backendLink}/create-user`,
                       {
                         method: "POST",
                         headers: {
@@ -310,7 +333,7 @@ export default function HomeScreen() {
               onChangeText={(e) => {
                 setCmdName(e);
               }}
-              maxDigit={`${text.length.toString()}/50`}
+              maxDigit={`${cmdName.length.toString()}/50`}
             />
           </ThemedView>
           <ThemedView style={styles.stepContainer}>
@@ -331,32 +354,149 @@ export default function HomeScreen() {
                 setCmdPrice(e);
               }}
               keyboardType="numeric"
-              maxDigit={`${text.length.toString()}/10`}
+              maxDigit={`${cmdPrice.length.toString()}/10`}
+            />
+          </ThemedView>
+          <ThemedView style={styles.stepContainer}>
+            <ThemedText type="subtitle">
+              Step 3: Enter Commodity Category
+            </ThemedText>
+            <ThemedText className="!text-yellow-800">
+              Fruits or{" "}
+              <ThemedText className="!text-yellow-800" type="defaultSemiBold">
+                Vegetables
+              </ThemedText>{" "}
+            </ThemedText>
+            <InputText
+              label="Commodity Category"
+              placeholder="Type your Category"
+              text={cmdCat}
+              onChangeText={(e) => {
+                setCmdCat(e);
+              }}
+              maxDigit={`${cmdCat.length.toString()}/30`}
+            />
+          </ThemedView>
+          <ThemedView style={styles.stepContainer}>
+            <ThemedText type="subtitle">Step 4: Select Grade Type</ThemedText>
+            <Dropdown
+              label="Grade Type"
+              mode="outlined"
+              placeholder="Select Grade Type"
+              options={gradeOptions}
+              value={cmdGradeType}
+              onSelect={(val) => {
+                if (val !== undefined) {
+                  setCmdGradeType(val);
+                }
+              }}
             />
           </ThemedView>
           {/* await AsyncStorage.removeItem("mandi-id"); */}
           <ThemedView style={styles.stepContainer}>
-            <ThemedText type="subtitle">Step 3: Submit</ThemedText>
+            <ThemedText type="subtitle">Step 5: Submit</ThemedText>
             <View className="pt-5">
               <Button
                 icon="rocket-launch"
                 mode="contained"
                 onPress={async () => {
-                  // console.log("Ok");
-                  const res = await fetch(
-                    "https://c5ff-115-99-94-143.ngrok-free.app/hello",
-                    {
-                      method: "GET",
+                  try {
+                    if (!cmdName) {
+                      Alert.alert(
+                        "Enter Commodity Name",
+                        "Commodity Name field is empty",
+                        [
+                          {
+                            text: "OK",
+                            onPress: () => console.log("OK Pressed"),
+                          },
+                        ]
+                      );
+                      return;
                     }
-                  );
-                  const textRes = await res.text();
-                  console.log(textRes);
+                    if (!cmdPrice) {
+                      Alert.alert(
+                        "Enter Commodity Price",
+                        "Commodity Price field is empty",
+                        [
+                          {
+                            text: "OK",
+                            onPress: () => console.log("OK Pressed"),
+                          },
+                        ]
+                      );
+                      return;
+                    }
+                    if (!cmdCat) {
+                      Alert.alert(
+                        "Enter Commodity Category",
+                        "Commodity Category field is empty",
+                        [
+                          {
+                            text: "OK",
+                            onPress: () => console.log("OK Pressed"),
+                          },
+                        ]
+                      );
+                      return;
+                    }
+                    if (!cmdGradeType) {
+                      Alert.alert(
+                        "Select Commodity Grade Type",
+                        "Commodity Grade Type has not been selected",
+                        [
+                          {
+                            text: "OK",
+                            onPress: () => console.log("OK Pressed"),
+                          },
+                        ]
+                      );
+                      return;
+                    }
+                    const reqBody = {
+                      categoryName: cmdCat,
+                      cmdName: cmdName,
+                      gradeType: cmdGradeType,
+                      gradePrice: cmdPrice,
+                      mandiId: mandiDetails.mandiId,
+                    };
+                    setLoading(true);
+                    const res = await fetch(
+                      `${CONSTANT.backendLink}/insert-commodity`,
+                      {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(reqBody),
+                      }
+                    );
+                    const jsonRes = await res.json();
+                    console.log(jsonRes);
+                    setLoading(false);
+                    // setTimeout(() => {
+                    //   setLoading(null);
+                    // }, 1500);
+                  } catch (error) {
+                    setLoading(null);
+                    console.log(error);
+                  }
                 }}
               >
                 Submit
               </Button>
             </View>
           </ThemedView>
+          {loading !== null &&
+            (loading === true ? (
+              <Loading />
+            ) : (
+              <AfterLoading1
+                text={`Thank you for submitting the price of ${cmdName} ${
+                  mandiDetails.name.split(" ")[0]
+                }! Upload More 😊!`}
+              />
+            ))}
         </>
       )}
     </ParallaxScrollView>
@@ -386,6 +526,18 @@ function AfterLoading({ text }: { text: string }) {
     <ThemedView style={styles.stepContainer}>
       <View className="flex flex-row items-center justify-center  pr-7 pt-2">
         <ThemedText type="subtitle" className="!text-slate-600 !text-2xl">
+          {text}
+        </ThemedText>
+      </View>
+    </ThemedView>
+  );
+}
+
+function AfterLoading1({ text }: { text: string }) {
+  return (
+    <ThemedView style={styles.stepContainer}>
+      <View className="flex flex-row items-center justify-center  pr-7 pt-2">
+        <ThemedText type="subtitle" className="!text-slate-600 !text-xl">
           {text}
         </ThemedText>
       </View>
