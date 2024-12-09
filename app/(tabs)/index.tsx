@@ -498,6 +498,7 @@ export default function HomeScreen() {
                     setLoading(null);
                     setMandiDetails(null);
                     setIsLoggedIn(false);
+                    await AsyncStorage.removeItem("mandi-id")
                   } catch (error) {
                     console.log(error);
                   }
