@@ -31,7 +31,12 @@ export default function HomeScreen() {
           className="!text-red-500 text-xl"
         />
         <ThemedText type="subtitle">Step 1: Enter your Name</ThemedText>
-        <InputText text={text} setText={setText} />
+        <InputText
+          label="Name"
+          placeholder="Type your name"
+          text={text}
+          setText={setText}
+        />
         <ThemedText>
           Edit{" "}
           <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText>{" "}

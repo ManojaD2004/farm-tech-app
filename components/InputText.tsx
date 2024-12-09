@@ -3,9 +3,13 @@ import { TextInput } from "react-native-paper";
 
 const InputText = ({
   text,
+  placeholder,
+  label,
   setText,
 }: {
   text: string;
+  placeholder: string;
+  label: string;
   setText: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   return (
@@ -13,8 +17,8 @@ const InputText = ({
       value={text}
       onChangeText={(e) => setText(e)}
       mode="outlined"
-      label="Name"
-      placeholder="Type something"
+      label={label}
+      placeholder={placeholder}
       right={<TextInput.Affix text="/100" />}
     />
   );
