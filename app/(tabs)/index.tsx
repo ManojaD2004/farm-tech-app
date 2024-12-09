@@ -1,4 +1,4 @@
-import { Image, StyleSheet } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 import { HelloWave } from "@/components/HelloWave";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
@@ -7,6 +7,7 @@ import React, { useState } from "react";
 import InputText from "@/components/InputText";
 import BlinkText from "@/components/BlinkText";
 import { Dropdown } from "react-native-paper-dropdown";
+import { Button } from "react-native-paper";
 
 const stateDistrict = {
   Karnataka: [
@@ -58,6 +59,7 @@ const stateOptions: { label: string; value: StateInIndia }[] = [
 
 export default function HomeScreen() {
   const [text, setText] = useState("");
+  const [number, setNumber] = useState("1234567890");
   const [state, setState] = useState<StateInIndia>();
   const [district, setDistrict] = useState<string>();
   return (
@@ -86,7 +88,9 @@ export default function HomeScreen() {
           label="Name"
           placeholder="Type your name"
           text={text}
-          setText={setText}
+          onChangeText={(e) => {
+            setText(e);
+          }}
         />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
@@ -110,7 +114,7 @@ export default function HomeScreen() {
           <Dropdown
             label="District"
             mode="outlined"
-            placeholder="Select Gender"
+            placeholder="Select District"
             options={stateDistrict[state]}
             value={district}
             onSelect={(val) => {
@@ -121,12 +125,42 @@ export default function HomeScreen() {
           />
         ) : (
           <ThemedText className="!text-yellow-800">
-            Select a <ThemedText type="defaultSemiBold">State first</ThemedText>{" "}
+            Select a{" "}
+            <ThemedText className="!text-yellow-800" type="defaultSemiBold">
+              State first
+            </ThemedText>{" "}
           </ThemedText>
         )}
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Enter your Contact Details</ThemedText>
+        <ThemedText type="subtitle">
+          Step 4: Enter your Contact Details
+        </ThemedText>
+        <InputText
+          label="Number"
+          placeholder="Type your Number"
+          text={number}
+          onChangeText={(e) => {
+            if (e.length > 10) {
+              return;
+            }
+            setNumber(e);
+          }}
+          maxDigit="10"
+          keyboardType="numeric"
+        />
+      </ThemedView>
+      <ThemedView style={styles.stepContainer}>
+        <ThemedText type="subtitle">Step 5: Submit</ThemedText>
+        <View className="pt-5">
+          <Button
+            icon="airplane"
+            mode="contained"
+            onPress={() => console.log("Pressed")}
+          >
+            Submit
+          </Button>
+        </View>
       </ThemedView>
     </ParallaxScrollView>
   );

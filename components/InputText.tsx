@@ -1,25 +1,34 @@
 import React from "react";
+import { KeyboardTypeOptions } from "react-native";
 import { TextInput } from "react-native-paper";
 
 const InputText = ({
   text,
   placeholder,
   label,
-  setText,
+  onChangeText,
+  maxDigit = "100",
+  keyboardType = "default",
+  disabled = false
 }: {
   text: string;
   placeholder: string;
   label: string;
-  setText: React.Dispatch<React.SetStateAction<string>>;
+  onChangeText: (e: string) => void;
+  maxDigit?: string;
+  keyboardType?: KeyboardTypeOptions;
+  disabled?: boolean;
 }) => {
   return (
     <TextInput
       value={text}
-      onChangeText={(e) => setText(e)}
+      keyboardType={keyboardType}
+      onChangeText={onChangeText}
       mode="outlined"
       label={label}
       placeholder={placeholder}
-      right={<TextInput.Affix text="/100" />}
+      right={<TextInput.Affix text={maxDigit} />}
+      disabled={disabled}
     />
   );
 };
