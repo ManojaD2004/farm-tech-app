@@ -1,4 +1,4 @@
-import { Image, StyleSheet, View } from "react-native";
+import { Alert, Image, StyleSheet, View } from "react-native";
 import { HelloWave } from "@/components/HelloWave";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
@@ -7,7 +7,7 @@ import React, { useEffect, useState } from "react";
 import InputText from "@/components/InputText";
 import BlinkText from "@/components/BlinkText";
 import { Dropdown } from "react-native-paper-dropdown";
-import { Button } from "react-native-paper";
+import { ActivityIndicator, Button, MD2Colors } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const stateDistrict = {
@@ -62,8 +62,10 @@ export default function HomeScreen() {
   const [text, setText] = useState("");
   const [cmdName, setCmdName] = useState("");
   const [cmdPrice, setCmdPrice] = useState("");
-  const [number, setNumber] = useState("1234567890");
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [number, setNumber] = useState("");
+  const [mandiDetails, setMandiDetails] = useState<any>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loading, setLoading] = useState<null | boolean>(null);
   const [state, setState] = useState<StateInIndia>();
   const [district, setDistrict] = useState<string>();
   useEffect(() => {
@@ -185,20 +187,72 @@ export default function HomeScreen() {
                 mode="contained"
                 onPress={async () => {
                   // console.log("Ok");
+                  if (!text) {
+                    Alert.alert("Enter your Name", "Name field is empty", [
+                      { text: "OK", onPress: () => console.log("OK Pressed") },
+                    ]);
+                  }
+                  if (!state) {
+                    Alert.alert(
+                      "Select your State",
+                      "State has not been selected",
+                      [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+                    );
+                  }
+                  if (!district) {
+                    Alert.alert(
+                      "Select your District",
+                      "District has not been selected",
+                      [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+                    );
+                  }
+                  if (!number) {
+                    Alert.alert("Enter your Number", "Number field is empty", [
+                      { text: "OK", onPress: () => console.log("OK Pressed") },
+                    ]);
+                  }
+                  const reqBody = {
+                    name: text,
+                    stateName: state,
+                    districtName: district,
+                    contact: number,
+                  };
+                  setLoading(true);
                   const res = await fetch(
-                    "https://c5ff-115-99-94-143.ngrok-free.app/hello",
+                    "https://c5ff-115-99-94-143.ngrok-free.app/create-user",
                     {
-                      method: "GET",
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify(reqBody),
                     }
                   );
-                  const textRes = await res.text();
-                  console.log(textRes);
+                  const jsonRes = await res.json();
+                  await AsyncStorage.setItem("mandi-id", jsonRes.mandiId);
+                  await AsyncStorage.setItem(
+                    "mandi-details",
+                    JSON.stringify(reqBody)
+                  );
+                  setLoading(false);
+                  setTimeout(() => {
+                    setIsLoggedIn(true);
+                    setLoading(null);
+                  }, 1500);
+                  setMandiDetails(jsonRes);
+                  console.log(jsonRes);
                 }}
               >
                 Submit
               </Button>
             </View>
           </ThemedView>
+          {loading !== null &&
+            (loading === true ? (
+              <Loading />
+            ) : (
+              <AfterLoading text={`Welcome ${text}`} />
+            ))}
         </>
       ) : (
         <>
@@ -274,6 +328,36 @@ export default function HomeScreen() {
         </>
       )}
     </ParallaxScrollView>
+  );
+}
+
+function Loading() {
+  return (
+    <ThemedView style={styles.stepContainer}>
+      <View className="flex flex-row items-center justify-center  pr-7 pt-2">
+        <ThemedText type="subtitle" className="!text-slate-600 !text-4xl">
+          Loading
+        </ThemedText>
+        <ActivityIndicator
+          className="pl-10"
+          size={40}
+          animating={true}
+          color={MD2Colors.red800}
+        />
+      </View>
+    </ThemedView>
+  );
+}
+
+function AfterLoading({ text }: { text: string }) {
+  return (
+    <ThemedView style={styles.stepContainer}>
+      <View className="flex flex-row items-center justify-center  pr-7 pt-2">
+        <ThemedText type="subtitle" className="!text-slate-600 !text-4xl">
+          {text}
+        </ThemedText>
+      </View>
+    </ThemedView>
   );
 }
 
