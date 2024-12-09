@@ -11,7 +11,7 @@ const SplashScreen = () => {
 
     const timer = setTimeout(() => {
       router.push("/(tabs)"); 
-    }, 1300);
+    }, 13000);
 
     return () => clearTimeout(timer);
   }, [router]);
