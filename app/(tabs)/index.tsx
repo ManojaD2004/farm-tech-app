@@ -487,6 +487,26 @@ export default function HomeScreen() {
               </Button>
             </View>
           </ThemedView>
+          <ThemedView style={styles.stepContainer}>
+            <View className="pt-0">
+              <Button
+                icon="door-open"
+                mode="contained"
+                buttonColor="red"
+                onPress={async () => {
+                  try {
+                    setLoading(null);
+                    setMandiDetails(null);
+                    setIsLoggedIn(false);
+                  } catch (error) {
+                    console.log(error);
+                  }
+                }}
+              >
+                Log Out
+              </Button>
+            </View>
+          </ThemedView>
           {loading !== null &&
             (loading === true ? (
               <Loading />
