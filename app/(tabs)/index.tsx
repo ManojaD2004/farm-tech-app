@@ -5,6 +5,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import React, { useState } from "react";
 import InputText from "@/components/InputText";
+import BlinkText from "@/components/BlinkText";
 
 export default function HomeScreen() {
   const [text, setText] = useState("");
@@ -25,9 +26,10 @@ export default function HomeScreen() {
         <HelloWave />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText className="!text-red-500 bg-green-500" type="default">
-          You have not logged in. Start by entering your deatils!
-        </ThemedText>
+        <BlinkText
+          text={"You have not logged in. Start by entering your deatils!"}
+          className="!text-red-500 text-xl"
+        />
         <ThemedText type="subtitle">Step 1: Enter your Name</ThemedText>
         <InputText text={text} setText={setText} />
         <ThemedText>
