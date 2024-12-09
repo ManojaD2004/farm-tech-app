@@ -10,16 +10,19 @@
     "splash": {
       "image": "./assets/images/small-farm-vector-sticker-cartoon_604923_wh860.png",
       "resizeMode": "cover",
-      "backgroundColor": "#ffffff"},
+      "backgroundColor": "#ffffff"
+    },
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.manojad.farmtechapp"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.manojad.farmtechapp"
     },
     "web": {
       "bundler": "metro",
@@ -40,6 +43,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "ca530022-3c17-46d0-a5c0-e6bd12861e6a"
+      }
     }
   }
 }
