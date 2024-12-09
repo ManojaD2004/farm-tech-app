@@ -1,12 +1,10 @@
 import { Image, StyleSheet, Platform } from "react-native";
-
 import { HelloWave } from "@/components/HelloWave";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import React, { useState } from "react";
 import InputText from "@/components/InputText";
-import "@/app/global.css";
 
 export default function HomeScreen() {
   const [text, setText] = useState("");
