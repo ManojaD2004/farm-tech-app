@@ -7,6 +7,10 @@
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/images/small-farm-vector-sticker-cartoon_604923_wh860.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#ffffff"},
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
