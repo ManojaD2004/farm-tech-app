@@ -3,11 +3,12 @@ import { HelloWave } from "@/components/HelloWave";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import InputText from "@/components/InputText";
 import BlinkText from "@/components/BlinkText";
 import { Dropdown } from "react-native-paper-dropdown";
 import { Button } from "react-native-paper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const stateDistrict = {
   Karnataka: [
@@ -59,9 +60,27 @@ const stateOptions: { label: string; value: StateInIndia }[] = [
 
 export default function HomeScreen() {
   const [text, setText] = useState("");
+  const [cmdName, setCmdName] = useState("");
+  const [cmdPrice, setCmdPrice] = useState("");
   const [number, setNumber] = useState("1234567890");
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [state, setState] = useState<StateInIndia>();
   const [district, setDistrict] = useState<string>();
+  useEffect(() => {
+    async function execThis() {
+      try {
+        const value = await AsyncStorage.getItem("mandi-it");
+        if (value !== null) {
+          setIsLoggedIn(true);
+          console.log(value);
+        }
+        // await AsyncStorage.setItem("key", "I like to save it.");
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    execThis();
+  });
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
@@ -78,90 +97,182 @@ export default function HomeScreen() {
         <ThemedText type="title">Welcome To Farm Tech!</ThemedText>
         <HelloWave />
       </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <BlinkText
-          text={"You have not logged in. Start by entering your deatils!"}
-          className="!text-red-500 text-xl"
-        />
-        <ThemedText type="subtitle">Step 1: Enter your Name</ThemedText>
-        <InputText
-          label="Name"
-          placeholder="Type your name"
-          text={text}
-          onChangeText={(e) => {
-            setText(e);
-          }}
-        />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Select Your State</ThemedText>
-        <Dropdown
-          label="State"
-          mode="outlined"
-          placeholder="Select State"
-          options={stateOptions}
-          value={state}
-          onSelect={(val) => {
-            if (val !== undefined) {
-              setState(val as StateInIndia);
-            }
-          }}
-        />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Select Your District</ThemedText>
-        {state !== undefined ? (
-          <Dropdown
-            label="District"
-            mode="outlined"
-            placeholder="Select District"
-            options={stateDistrict[state]}
-            value={district}
-            onSelect={(val) => {
-              if (val !== undefined) {
-                setDistrict(val);
-              }
-            }}
-          />
-        ) : (
-          <ThemedText className="!text-yellow-800">
-            Select a{" "}
-            <ThemedText className="!text-yellow-800" type="defaultSemiBold">
-              State first
-            </ThemedText>{" "}
-          </ThemedText>
-        )}
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">
-          Step 4: Enter your Contact Details
-        </ThemedText>
-        <InputText
-          label="Number"
-          placeholder="Type your Number"
-          text={number}
-          onChangeText={(e) => {
-            if (e.length > 10) {
-              return;
-            }
-            setNumber(e);
-          }}
-          maxDigit="10"
-          keyboardType="numeric"
-        />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 5: Submit</ThemedText>
-        <View className="pt-5">
-          <Button
-            icon="airplane"
-            mode="contained"
-            onPress={() => console.log("Pressed")}
-          >
-            Submit
-          </Button>
-        </View>
-      </ThemedView>
+      {isLoggedIn === false ? (
+        <>
+          <ThemedView style={styles.stepContainer}>
+            <BlinkText
+              text={"You have not logged in. Start by entering your deatils!"}
+              className="!text-red-500 text-xl"
+            />
+            <ThemedText type="subtitle">Step 1: Enter your Name</ThemedText>
+            <InputText
+              label="Name"
+              placeholder="Type your name"
+              text={text}
+              onChangeText={(e) => {
+                if (e.length > 50) {
+                  return;
+                }
+                setText(e);
+              }}
+              maxDigit={`${text.length.toString()}/50`}
+            />
+          </ThemedView>
+          <ThemedView style={styles.stepContainer}>
+            <ThemedText type="subtitle">Step 2: Select Your State</ThemedText>
+            <Dropdown
+              label="State"
+              mode="outlined"
+              placeholder="Select State"
+              options={stateOptions}
+              value={state}
+              onSelect={(val) => {
+                if (val !== undefined) {
+                  setState(val as StateInIndia);
+                }
+              }}
+            />
+          </ThemedView>
+          <ThemedView style={styles.stepContainer}>
+            <ThemedText type="subtitle">
+              Step 3: Select Your District
+            </ThemedText>
+            {state !== undefined ? (
+              <Dropdown
+                label="District"
+                mode="outlined"
+                placeholder="Select District"
+                options={stateDistrict[state]}
+                value={district}
+                onSelect={(val) => {
+                  if (val !== undefined) {
+                    setDistrict(val);
+                  }
+                }}
+              />
+            ) : (
+              <ThemedText className="!text-yellow-800">
+                Select a{" "}
+                <ThemedText className="!text-yellow-800" type="defaultSemiBold">
+                  State first
+                </ThemedText>{" "}
+              </ThemedText>
+            )}
+          </ThemedView>
+          <ThemedView style={styles.stepContainer}>
+            <ThemedText type="subtitle">
+              Step 4: Enter your Contact Details
+            </ThemedText>
+            <InputText
+              label="Number"
+              placeholder="Type your Number"
+              text={number}
+              onChangeText={(e) => {
+                if (e.length > 10) {
+                  return;
+                }
+                setNumber(e);
+              }}
+              maxDigit={`${number.length.toString()}/10`}
+              keyboardType="numeric"
+            />
+          </ThemedView>
+          <ThemedView style={styles.stepContainer}>
+            <ThemedText type="subtitle">Step 5: Submit</ThemedText>
+            <View className="pt-5">
+              <Button
+                icon="firework"
+                mode="contained"
+                onPress={async () => {
+                  // console.log("Ok");
+                  const res = await fetch(
+                    "https://c5ff-115-99-94-143.ngrok-free.app/hello",
+                    {
+                      method: "GET",
+                    }
+                  );
+                  const textRes = await res.text();
+                  console.log(textRes);
+                }}
+              >
+                Submit
+              </Button>
+            </View>
+          </ThemedView>
+        </>
+      ) : (
+        <>
+          <ThemedView style={styles.stepContainer}>
+            <ThemedText className="!text-yellow-800">
+              Enter{" "}
+              <ThemedText className="!text-yellow-800" type="defaultSemiBold">
+                Commodity name
+              </ThemedText>{" "}
+              and{" "}
+              <ThemedText className="!text-yellow-800" type="defaultSemiBold">
+                Price!
+              </ThemedText>{" "}
+            </ThemedText>
+          </ThemedView>
+          <ThemedView style={styles.stepContainer}>
+            <ThemedText type="subtitle">
+              Step 1: Enter Commodity Name
+            </ThemedText>
+            <InputText
+              label="Commodity Name"
+              placeholder="Type your Commodity Name"
+              text={cmdName}
+              onChangeText={(e) => {
+                setCmdName(e);
+              }}
+              maxDigit={`${text.length.toString()}/50`}
+            />
+          </ThemedView>
+          <ThemedView style={styles.stepContainer}>
+            <ThemedText type="subtitle">
+              Step 2: Enter Commodity Price
+            </ThemedText>
+            <ThemedText className="!text-yellow-800">
+              In{" "}
+              <ThemedText className="!text-yellow-800" type="defaultSemiBold">
+                Rupees
+              </ThemedText>{" "}
+            </ThemedText>
+            <InputText
+              label="Commodity Price"
+              placeholder="Type your Commodity Price"
+              text={cmdPrice}
+              onChangeText={(e) => {
+                setCmdPrice(e);
+              }}
+              keyboardType="numeric"
+              maxDigit={`${text.length.toString()}/10`}
+            />
+          </ThemedView>
+          <ThemedView style={styles.stepContainer}>
+            <ThemedText type="subtitle">Step 3: Submit</ThemedText>
+            <View className="pt-5">
+              <Button
+                icon="rocket-launch"
+                mode="contained"
+                onPress={async () => {
+                  // console.log("Ok");
+                  const res = await fetch(
+                    "https://c5ff-115-99-94-143.ngrok-free.app/hello",
+                    {
+                      method: "GET",
+                    }
+                  );
+                  const textRes = await res.text();
+                  console.log(textRes);
+                }}
+              >
+                Submit
+              </Button>
+            </View>
+          </ThemedView>
+        </>
+      )}
     </ParallaxScrollView>
   );
 }
