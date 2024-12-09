@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Platform } from "react-native";
+import { Image, StyleSheet } from "react-native";
 import { HelloWave } from "@/components/HelloWave";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
@@ -6,9 +6,60 @@ import { ThemedView } from "@/components/ThemedView";
 import React, { useState } from "react";
 import InputText from "@/components/InputText";
 import BlinkText from "@/components/BlinkText";
+import { Dropdown } from "react-native-paper-dropdown";
+
+const stateDistrict = {
+  Karnataka: [
+    { label: "Bagalkot", value: "Bagalkot" },
+    { label: "Bangalore Rural", value: "Bangalore Rural" },
+    { label: "Bangalore Urban", value: "Bangalore Urban" },
+    { label: "Belagavi (Belgaum)", value: "Belagavi (Belgaum)" },
+    { label: "Ballari (Bellary)", value: "Ballari (Bellary)" },
+    { label: "Bidar", value: "Bidar" },
+    { label: "Chamarajanagar", value: "Chamarajanagar" },
+    {
+      label: "Chikkamagaluru (Chikmagalur)",
+      value: "Chikkamagaluru (Chikmagalur)",
+    },
+    { label: "Chitradurga", value: "Chitradurga" },
+    { label: "Davanagere", value: "Davanagere" },
+    { label: "Dharwad", value: "Dharwad" },
+    { label: "Gadag", value: "Gadag" },
+    { label: "Gulbarga (Kalaburagi)", value: "Gulbarga (Kalaburagi)" },
+    { label: "Hassan", value: "Hassan" },
+    { label: "Haveri", value: "Haveri" },
+    { label: "Kodagu", value: "Kodagu" },
+    { label: "Kolar", value: "Kolar" },
+    { label: "Koppal", value: "Koppal" },
+    { label: "Mandya", value: "Mandya" },
+    { label: "Mysuru (Mysore)", value: "Mysuru (Mysore)" },
+    { label: "Raichur", value: "Raichur" },
+    { label: "Ramanagara", value: "Ramanagara" },
+    { label: "Shimoga (Shivamogga)", value: "Shimoga (Shivamogga)" },
+    { label: "Tumakuru (Tumkur)", value: "Tumakuru (Tumkur)" },
+    { label: "Udupi", value: "Udupi" },
+    { label: "Uttara Kannada (Karwar)", value: "Uttara Kannada (Karwar)" },
+    { label: "Vijayapura (Bijapur)", value: "Vijayapura (Bijapur)" },
+    { label: "Vidhana Soudha", value: "Vidhana Soudha" },
+    { label: "Yadgir", value: "Yadgir" },
+    { label: "Chikkaballapur", value: "Chikkaballapur" },
+    {
+      label: "Dakshina Kannada (Mangalore)",
+      value: "Dakshina Kannada (Mangalore)",
+    },
+  ],
+};
+
+type StateInIndia = keyof typeof stateDistrict;
+
+const stateOptions: { label: string; value: StateInIndia }[] = [
+  { label: "Karnataka", value: "Karnataka" },
+];
 
 export default function HomeScreen() {
   const [text, setText] = useState("");
+  const [state, setState] = useState<StateInIndia>();
+  const [district, setDistrict] = useState<string>();
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
@@ -37,37 +88,45 @@ export default function HomeScreen() {
           text={text}
           setText={setText}
         />
-        <ThemedText>
-          Edit{" "}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText>{" "}
-          to see changes. Press{" "}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: "cmd + d",
-              android: "cmd + m",
-              web: "F12",
-            })}
-          </ThemedText>{" "}
-          to open developer tools.
-        </ThemedText>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this
-          starter app.
-        </ThemedText>
+        <ThemedText type="subtitle">Step 2: Select Your State</ThemedText>
+        <Dropdown
+          label="State"
+          mode="outlined"
+          placeholder="Select State"
+          options={stateOptions}
+          value={state}
+          onSelect={(val) => {
+            if (val !== undefined) {
+              setState(val as StateInIndia);
+            }
+          }}
+        />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{" "}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText>{" "}
-          to get a fresh <ThemedText type="defaultSemiBold">app</ThemedText>{" "}
-          directory. This will move the current{" "}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{" "}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
+        <ThemedText type="subtitle">Step 3: Select Your District</ThemedText>
+        {state !== undefined ? (
+          <Dropdown
+            label="District"
+            mode="outlined"
+            placeholder="Select Gender"
+            options={stateDistrict[state]}
+            value={district}
+            onSelect={(val) => {
+              if (val !== undefined) {
+                setDistrict(val);
+              }
+            }}
+          />
+        ) : (
+          <ThemedText className="!text-yellow-800">
+            Select a <ThemedText type="defaultSemiBold">State first</ThemedText>{" "}
+          </ThemedText>
+        )}
+      </ThemedView>
+      <ThemedView style={styles.stepContainer}>
+        <ThemedText type="subtitle">Step 3: Enter your Contact Details</ThemedText>
       </ThemedView>
     </ParallaxScrollView>
   );

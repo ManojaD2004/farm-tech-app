@@ -6,11 +6,14 @@ import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Feather, FontAwesome5 } from "@expo/vector-icons";
+import { PaperProvider } from "react-native-paper";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
+    <PaperProvider>
+
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
@@ -45,5 +48,6 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
+    </PaperProvider>
   );
 }
