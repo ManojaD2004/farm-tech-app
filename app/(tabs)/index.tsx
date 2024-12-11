@@ -354,7 +354,7 @@ export default function HomeScreen() {
               onChangeText={(e) => {
                 setCmdPrice(e);
               }}
-              keyboardType="numeric"
+              keyboardType="number-pad"
               maxDigit={`${cmdPrice.length.toString()}/10`}
               maxLen={10}
             />
