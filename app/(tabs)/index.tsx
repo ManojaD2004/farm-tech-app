@@ -113,7 +113,7 @@ export default function HomeScreen() {
           Welcome{" "}
           {isLoggedIn === true ? (
             <ThemedText className="!text-yellow-800" type="title">
-              {mandiDetails.name}
+              {mandiDetails?.name}
             </ThemedText>
           ) : (
             "To Farm Tech!"
@@ -265,6 +265,7 @@ export default function HomeScreen() {
                         contactType: "phone",
                         contactDetail: number,
                       },
+                      mandiId: ""
                     };
                     setLoading(true);
                     const res = await fetch(
@@ -284,13 +285,13 @@ export default function HomeScreen() {
                       "mandi-details",
                       JSON.stringify(reqBody)
                     );
-
+                    reqBody.mandiId = jsonRes.mandiId;
                     setLoading(false);
                     setTimeout(() => {
+                      setMandiDetails(jsonRes);
                       setIsLoggedIn(true);
                       setLoading(null);
                     }, 1500);
-                    setMandiDetails(jsonRes);
                     console.log(jsonRes);
                   } catch (error) {
                     console.log(error);
@@ -474,9 +475,9 @@ export default function HomeScreen() {
                     const jsonRes = await res.json();
                     console.log(jsonRes);
                     setLoading(false);
-                    // setTimeout(() => {
-                    //   setLoading(null);
-                    // }, 1500);
+                    setTimeout(() => {
+                      setLoading(null);
+                    }, 1500);
                   } catch (error) {
                     setLoading(null);
                     console.log(error);
