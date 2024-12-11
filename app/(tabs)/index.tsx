@@ -140,6 +140,7 @@ export default function HomeScreen() {
                 setText(e);
               }}
               maxDigit={`${text.length.toString()}/50`}
+              maxLen={50}
             />
           </ThemedView>
           <ThemedView style={styles.stepContainer}>
@@ -192,13 +193,11 @@ export default function HomeScreen() {
               placeholder="Type your Number"
               text={number}
               onChangeText={(e) => {
-                if (e.length > 10) {
-                  return;
-                }
                 setNumber(e);
               }}
               maxDigit={`${number.length.toString()}/10`}
-              keyboardType="numeric"
+              maxLen={10}
+              keyboardType="number-pad"
             />
           </ThemedView>
           <ThemedView style={styles.stepContainer}>
@@ -288,7 +287,7 @@ export default function HomeScreen() {
                     reqBody.mandiId = jsonRes.mandiId;
                     setLoading(false);
                     setTimeout(() => {
-                      setMandiDetails(jsonRes);
+                      setMandiDetails(reqBody);
                       setIsLoggedIn(true);
                       setLoading(null);
                     }, 1500);
@@ -335,6 +334,7 @@ export default function HomeScreen() {
                 setCmdName(e);
               }}
               maxDigit={`${cmdName.length.toString()}/50`}
+              maxLen={50}
             />
           </ThemedView>
           <ThemedView style={styles.stepContainer}>
@@ -356,6 +356,7 @@ export default function HomeScreen() {
               }}
               keyboardType="numeric"
               maxDigit={`${cmdPrice.length.toString()}/10`}
+              maxLen={10}
             />
           </ThemedView>
           <ThemedView style={styles.stepContainer}>
@@ -376,6 +377,7 @@ export default function HomeScreen() {
                 setCmdCat(e);
               }}
               maxDigit={`${cmdCat.length.toString()}/30`}
+              maxLen={30}
             />
           </ThemedView>
           <ThemedView style={styles.stepContainer}>
